@@ -33,19 +33,33 @@
 import SwiftUI
 
 struct ScoreView: View {
-  var numberOfAnswered = 0
-  var numberOfQuestions = 5
+  @Binding var numberOfAnswered: Int
+  
+  let numberOfQuestions: Int
   
   var body: some View {
-    HStack {
-      Text("\(numberOfAnswered)/\(numberOfQuestions)")
-      Spacer()
-    }
+    // 1
+    Button(action: {
+      // 2
+      self.numberOfAnswered += 1
+      print("Answered: \(numberOfAnswered)")
+    }, label: {
+      HStack {
+        Text("\(numberOfAnswered)/\(numberOfQuestions)")
+          .font(.caption)
+          .padding(4)
+        Text("ScoreView Counter: \(numberOfAnswered)")
+        Spacer()
+      }
+    })
   }
 }
 
 struct ScoreView_Previews: PreviewProvider {
+  @State static var numberOfAnswers: Int = 0
+  
   static var previews: some View {
-    ScoreView()
+    ScoreView(numberOfAnswered: $numberOfAnswers, numberOfQuestions: 5)
   }
 }
+
