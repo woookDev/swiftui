@@ -40,7 +40,9 @@ struct WelcomeView: View {
   @ViewBuilder
   var body: some View {
     if showPractice {
-      PracticeView(challengeTest: $challengesViewModel.currentChallenge, userName: $userManager.profile.name)
+      PracticeView(challengeTest: $challengesViewModel.currentChallenge, userName: $userManager.profile.name,
+                   numberOfAnswered: .constant(challengesViewModel.numberOfAnswered)
+      )
     } else {
       ZStack {
         WelcomeBackgroundImage()
