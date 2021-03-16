@@ -141,7 +141,6 @@ class ChallengesViewModel: ObservableObject {
   
   func saveCorrectAnswer(for challenge: Challenge) {
     correctAnswers.append(challenge)
-    generateRandomChallenge()
   }
   
   func saveWrongAnswer(for challenge: Challenge) {
