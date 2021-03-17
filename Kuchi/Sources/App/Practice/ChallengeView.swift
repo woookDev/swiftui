@@ -37,10 +37,11 @@ struct ChallengeView: View {
   
   @Binding var numberOfAnswered: Int
   
-  
   @State var showAnswers = false
   
   @Environment(\.verticalSizeClass) var verticalSizeClass
+  
+  @Environment(\.questionsPerSession) var questionPerSession
 
   @ViewBuilder
   var body: some View {
@@ -61,7 +62,7 @@ struct ChallengeView: View {
             ChoicesView(challengeTest: challengeTest)
           }
         }
-        ScoreView(numberOfAnswered: $numberOfAnswered, numberOfQuestions: 5)
+        ScoreView(numberOfAnswered: $numberOfAnswered, numberOfQuestions: questionPerSession)
       }
     } else {
       Button(action: {
@@ -71,7 +72,7 @@ struct ChallengeView: View {
       })
       ScoreView(
         numberOfAnswered: $numberOfAnswered,
-        numberOfQuestions: 5
+        numberOfQuestions: questionPerSession
       )
       if showAnswers {
         Divider()

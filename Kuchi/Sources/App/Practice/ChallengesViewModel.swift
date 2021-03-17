@@ -33,6 +33,20 @@
 import SwiftUI
 import Combine
 
+struct QuestionPerSessionKey: EnvironmentKey {
+  static var defaultValue: Int = 5
+}
+
+// 1
+extension EnvironmentValues {
+  // 2
+  var questionsPerSession: Int {
+    // 3
+    get { self[QuestionPerSessionKey.self] }
+    set { self[QuestionPerSessionKey.self] = newValue }
+  }
+}
+
 struct Challenge {
   let question: String
   let pronunciation: String
@@ -75,6 +89,8 @@ class ChallengesViewModel: ObservableObject {
   
   var numberOfAnswered: Int { return correctAnswers.count }
   
+  private(set) var numberOfQuestions = 6
+  
   init() {
     generateRandomChallenge()
   }
@@ -98,7 +114,7 @@ class ChallengesViewModel: ObservableObject {
   }
   
   func generateRandomChallenge() {
-    if correctAnswers.count < 5 {
+    if correctAnswers.count < numberOfQuestions {
       currentChallenge = getRandomChallenge()
     } else {
       currentChallenge = nil

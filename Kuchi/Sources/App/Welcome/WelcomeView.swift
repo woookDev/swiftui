@@ -43,6 +43,7 @@ struct WelcomeView: View {
       PracticeView(challengeTest: $challengesViewModel.currentChallenge, userName: $userManager.profile.name,
                    numberOfAnswered: .constant(challengesViewModel.numberOfAnswered)
       )
+      .environment(\.questionPerSession, challengesViewModel.numberOfQuestions)
     } else {
       ZStack {
         WelcomeBackgroundImage()
