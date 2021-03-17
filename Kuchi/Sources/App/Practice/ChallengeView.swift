@@ -37,10 +37,51 @@ struct ChallengeView: View {
   
   @Binding var numberOfAnswered: Int
   
+  
   @State var showAnswers = false
+  
+  @Environment(\.verticalSizeClass) var verticalSizeClass
 
+  @ViewBuilder
   var body: some View {
-    VStack {
+    
+    // 2
+    if verticalSizeClass == .compact {
+      // 3
+      VStack {
+        // 4
+        HStack {
+          Button(action: {
+            self.showAnswers = !self.showAnswers
+          }, label: {
+            QuestionView(question: challengeTest.challenge.question)
+          })
+          if showAnswers {
+            Divider()
+            ChoicesView(challengeTest: challengeTest)
+          }
+        }
+        ScoreView(numberOfAnswered: $numberOfAnswered, numberOfQuestions: 5)
+      }
+    } else {
+      Button(action: {
+        self.showAnswers = !self.showAnswers
+      }, label: {
+        QuestionView(question: challengeTest.challenge.question).frame(height: 300)
+      })
+      ScoreView(
+        numberOfAnswered: $numberOfAnswered,
+        numberOfQuestions: 5
+      )
+      if showAnswers {
+        Divider()
+        ChoicesView(challengeTest: challengeTest)
+          .frame(height: 300)
+          .padding()
+      }
+    }
+    
+    /*VStack {
       Button(action: {
         self.showAnswers = !self.showAnswers
       }) {
@@ -56,7 +97,7 @@ struct ChallengeView: View {
           .frame(height: 300)
           .padding()
       }
-    }
+    }*/
   }
 }
 
