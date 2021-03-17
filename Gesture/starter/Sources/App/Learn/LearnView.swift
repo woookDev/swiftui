@@ -1,4 +1,4 @@
-/// Copyright (c) 2020 Razeware LLC
+/// Copyright (c) 2021 Razeware LLC
 /// 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -32,43 +32,14 @@
 
 import SwiftUI
 
-struct WelcomeView: View {
-  @EnvironmentObject var userManager: UserManager
-  @EnvironmentObject var challengesViewModel: ChallengesViewModel
-  @State var showPractice = false
-
-  @ViewBuilder
-  var body: some View {
-    if showPractice {
-      PracticeView(challengeTest: $challengesViewModel.currentChallenge, userName: $userManager.profile.name,
-                   numberOfAnswered: .constant(challengesViewModel.numberOfAnswered)
-      )
-      .environment(\.questionsPerSession, challengesViewModel.numberOfQuestions)
-    } else {
-      ZStack {
-        WelcomeBackgroundImage()
-        VStack {
-          Text(verbatim: "Hi, \(userManager.profile.name)")
-
-          WelcomeMessageView()
-
-          Button(action: {
-            self.showPractice = true
-          }, label: {
-            HStack {
-              Image(systemName: "play")
-              Text(verbatim: "Start")
-            }
-          })
-        }
-      }
+struct LearnView: View {
+    var body: some View {
+        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
-  }
 }
 
-struct WelcomeView_Previews: PreviewProvider {
-  static var previews: some View {
-    WelcomeView()
-      .environmentObject(UserManager())
-  }
+struct LearnView_Previews: PreviewProvider {
+    static var previews: some View {
+        LearnView()
+    }
 }

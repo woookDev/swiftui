@@ -32,43 +32,25 @@
 
 import SwiftUI
 
-struct WelcomeView: View {
-  @EnvironmentObject var userManager: UserManager
-  @EnvironmentObject var challengesViewModel: ChallengesViewModel
-  @State var showPractice = false
+struct ScoreView: View {
+  let numberOfQuestions: Int
+  
+  @Binding var numberOfAnswered: Int
 
-  @ViewBuilder
   var body: some View {
-    if showPractice {
-      PracticeView(challengeTest: $challengesViewModel.currentChallenge, userName: $userManager.profile.name,
-                   numberOfAnswered: .constant(challengesViewModel.numberOfAnswered)
-      )
-      .environment(\.questionsPerSession, challengesViewModel.numberOfQuestions)
-    } else {
-      ZStack {
-        WelcomeBackgroundImage()
-        VStack {
-          Text(verbatim: "Hi, \(userManager.profile.name)")
-
-          WelcomeMessageView()
-
-          Button(action: {
-            self.showPractice = true
-          }, label: {
-            HStack {
-              Image(systemName: "play")
-              Text(verbatim: "Start")
-            }
-          })
-        }
-      }
+    HStack {
+      Text("\(numberOfAnswered)/\(numberOfQuestions)")
+        .font(.caption)
+        .padding(4)
+      Spacer()
     }
   }
 }
 
-struct WelcomeView_Previews: PreviewProvider {
+struct ScoreView_Previews: PreviewProvider {
+  @State static var numberOfAnswers: Int = 0
+  
   static var previews: some View {
-    WelcomeView()
-      .environmentObject(UserManager())
+    ScoreView(numberOfQuestions: 5, numberOfAnswered: $numberOfAnswers)
   }
 }

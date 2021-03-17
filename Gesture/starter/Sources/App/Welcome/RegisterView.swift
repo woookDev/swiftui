@@ -1,15 +1,15 @@
 /// Copyright (c) 2020 Razeware LLC
-/// 
+///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
 /// distribute, sublicense, create a derivative work, and/or sell copies of the
 /// Software in any work that is designed, intended, or marketed for pedagogical or
@@ -17,7 +17,7 @@
 /// or information technology.  Permission for such use, copying, modification,
 /// merger, publication, distribution, sublicensing, creation of derivative works,
 /// or sale is expressly withheld.
-/// 
+///
 /// This project and source code may use libraries or frameworks that are
 /// released under various Open-Source licenses. Use of those libraries and
 /// frameworks are governed by their own individual licenses.
@@ -32,43 +32,87 @@
 
 import SwiftUI
 
-struct WelcomeView: View {
+struct RegisterView: View {
   @EnvironmentObject var userManager: UserManager
-  @EnvironmentObject var challengesViewModel: ChallengesViewModel
-  @State var showPractice = false
+  @ObservedObject var keyboardHandler: KeyboardFollower
 
-  @ViewBuilder
+  init(keyboardHandler: KeyboardFollower) {
+    self.keyboardHandler = keyboardHandler
+  }
+
   var body: some View {
-    if showPractice {
-      PracticeView(challengeTest: $challengesViewModel.currentChallenge, userName: $userManager.profile.name,
-                   numberOfAnswered: .constant(challengesViewModel.numberOfAnswered)
-      )
-      .environment(\.questionsPerSession, challengesViewModel.numberOfQuestions)
-    } else {
-      ZStack {
-        WelcomeBackgroundImage()
-        VStack {
-          Text(verbatim: "Hi, \(userManager.profile.name)")
+    VStack {
+      Spacer()
 
-          WelcomeMessageView()
+      WelcomeMessageView()
 
-          Button(action: {
-            self.showPractice = true
-          }, label: {
-            HStack {
-              Image(systemName: "play")
-              Text(verbatim: "Start")
-            }
-          })
+      TextField("Type your name...", text: $userManager.profile.name)
+        .bordered()
+
+      HStack {
+        Spacer()
+        Text("\(userManager.profile.name.count)")
+          .font(.caption)
+          .foregroundColor(userManager.isUserNameValid() ? .green : .red)
+          .padding(.trailing)
+      }
+      .padding(.bottom)
+
+
+      HStack {
+        Spacer()
+
+        Toggle(isOn: $userManager.settings.rememberUser) {
+          Text("Remember me")
+            .font(.subheadline)
+            .foregroundColor(.gray)
+        }
+          .fixedSize()
+      }
+
+      Button(action: self.registerUser) {
+        HStack {
+          Image(systemName: "checkmark")
+            .resizable()
+            .frame(width: 16, height: 16, alignment: .center)
+          Text("OK")
+            .font(.body)
+            .bold()
         }
       }
+      .bordered()
+      .disabled(!userManager.isUserNameValid())
+
+      Spacer()
+
     }
+      .padding(.bottom, keyboardHandler.keyboardHeight)
+      .edgesIgnoringSafeArea(keyboardHandler.isVisible ? .bottom : [])
+      .padding()
+      .background(WelcomeBackgroundImage())
   }
 }
 
-struct WelcomeView_Previews: PreviewProvider {
-  static var previews: some View {
-    WelcomeView()
-      .environmentObject(UserManager())
+// MARK: - Event Handlers
+extension RegisterView {
+  func registerUser() {
+    if userManager.settings.rememberUser {
+      userManager.persistProfile()
+    } else {
+      userManager.clear()
+    }
+
+    userManager.persistSettings()
+    userManager.setRegistered()
   }
 }
+
+struct RegisterView_Previews: PreviewProvider {
+  static let user = UserManager(name: "Ray")
+
+  static var previews: some View {
+    RegisterView(keyboardHandler: KeyboardFollower())
+      .environmentObject(user)
+  }
+}
+
