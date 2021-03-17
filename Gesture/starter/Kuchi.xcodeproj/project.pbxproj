@@ -34,6 +34,8 @@
 		67D0F51022E70EE6009CC869 /* jp.json in Resources */ = {isa = PBXBuildFile; fileRef = 67D0F50F22E70EE6009CC869 /* jp.json */; };
 		888AAA0526023F0300756135 /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AAA0426023F0300756135 /* LearnView.swift */; };
 		888AAA0926023F5700756135 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AAA0826023F5700756135 /* HomeView.swift */; };
+		888AAA0C260257C300756135 /* FlashCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AAA0B260257C300756135 /* FlashCard.swift */; };
+		888AAA0F260259AB00756135 /* FlashDeck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AAA0E260259AB00756135 /* FlashDeck.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +69,8 @@
 		67D0F50F22E70EE6009CC869 /* jp.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = jp.json; sourceTree = "<group>"; };
 		888AAA0426023F0300756135 /* LearnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnView.swift; sourceTree = "<group>"; };
 		888AAA0826023F5700756135 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		888AAA0B260257C300756135 /* FlashCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashCard.swift; sourceTree = "<group>"; };
+		888AAA0E260259AB00756135 /* FlashDeck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashDeck.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +212,8 @@
 			isa = PBXGroup;
 			children = (
 				888AAA0426023F0300756135 /* LearnView.swift */,
+				888AAA0B260257C300756135 /* FlashCard.swift */,
+				888AAA0E260259AB00756135 /* FlashDeck.swift */,
 			);
 			path = Learn;
 			sourceTree = "<group>";
@@ -296,6 +302,7 @@
 				5764106223304B400060CADD /* ChoicesRow.swift in Sources */,
 				570AD4892300D6C6006E62EE /* WelcomeMessageView.swift in Sources */,
 				5788F49D23076849003C33E2 /* KeyboardFollower.swift in Sources */,
+				888AAA0F260259AB00756135 /* FlashDeck.swift in Sources */,
 				57EC3B4422FE38BE00C2609A /* RegisterView.swift in Sources */,
 				570492B622EE4352006BB8FA /* WelcomeView.swift in Sources */,
 				57EC3B4722FE390C00C2609A /* UserManager.swift in Sources */,
@@ -305,6 +312,7 @@
 				5764105F23304B400060CADD /* QuestionView.swift in Sources */,
 				570CAF4722FEBD82003D2DC4 /* LogoImage.swift in Sources */,
 				5794FEBB23022A800018E788 /* Settings.swift in Sources */,
+				888AAA0C260257C300756135 /* FlashCard.swift in Sources */,
 				5754AA5E2331789000F9275D /* StarterView.swift in Sources */,
 				5764105A23304AFB0060CADD /* ChallengesViewModel.swift in Sources */,
 				57EC3B4C22FE3BB000C2609A /* WelcomeBackgroundImage.swift in Sources */,
