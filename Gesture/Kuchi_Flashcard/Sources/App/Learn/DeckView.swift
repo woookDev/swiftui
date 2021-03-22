@@ -44,9 +44,29 @@ struct DeckView: View {
   
   var body: some View {
     ZStack {
-      CardView()
-      CardView()
+      ForEach(deck.cards.filter { $0.isActive }) {
+        card in
+        self.getCardView(for: card)
+      }
     }
+  }
+  
+  func getCardView(for card: FlashCard) -> CardView {
+    let activeCards = deck.cards.filter { $0.isActive == true }
+    if let lastCard = activeCards.last {
+      if lastCard == card {
+        return createCardView(for: card)
+      }
+    }
+    
+    let view = createCardView(for: card)
+    return view
+  }
+  
+  func createCardView(for card: FlashCard) -> CardView {
+    let view = CardView(card)
+    
+    return view
   }
 }
 
