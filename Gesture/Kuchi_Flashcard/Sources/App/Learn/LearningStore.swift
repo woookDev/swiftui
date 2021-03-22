@@ -32,7 +32,7 @@
 
 import Foundation
 
-class LearningStore {
+class LearningStore: ObservableObject {
   
   // 1
   @Published var deck: FlashDeck
@@ -56,5 +56,8 @@ class LearningStore {
     }
     
     self.card = card
+    self.deck.cards.removeLast()
+    
+    return self.card
   }
 }

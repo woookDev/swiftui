@@ -32,14 +32,17 @@
 
 import SwiftUI
 
-struct LearnView: View {
+struct DeckView: View {
   var body: some View {
-    Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    ZStack {
+      CardView()
+      CardView()
+    }
   }
 }
 
-struct LearnView_Previews: PreviewProvider {
+struct DeckView_Previews: PreviewProvider {
   static var previews: some View {
-    LearnView()
+    DeckView()
   }
 }

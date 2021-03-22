@@ -32,14 +32,33 @@
 
 import SwiftUI
 
-struct LearnView: View {
+struct CardView: View {
   var body: some View {
-    Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    ZStack {
+      Rectangle()
+        .fill(Color.red)
+        .frame(width: 320, height: 210)
+        .cornerRadius(12)
+      VStack {
+        Spacer()
+        Text("Apple")
+          .font(.largeTitle)
+          .foregroundColor(.white)
+        Text("Omena")
+          .font(.caption)
+          .foregroundColor(.white)
+        Spacer()
+      }
+    }
+    .shadow(radius: 8)
+    .frame(width: 320, height: 210)
+    .animation(.spring())
+    
   }
 }
 
-struct LearnView_Previews: PreviewProvider {
+struct CardView_Previews: PreviewProvider {
   static var previews: some View {
-    LearnView()
+    CardView()
   }
 }
