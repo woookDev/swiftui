@@ -33,6 +33,15 @@
 import SwiftUI
 
 struct DeckView: View {
+  @ObservedObject var deck: FlashDeck
+  
+  let onMemorized: () -> Void
+  
+  init(deck: FlashDeck, onMemorized: @escaping () -> Void) {
+    self.onMemorized = onMemorized
+    self.deck = deck
+  }
+  
   var body: some View {
     ZStack {
       CardView()
@@ -43,6 +52,9 @@ struct DeckView: View {
 
 struct DeckView_Previews: PreviewProvider {
   static var previews: some View {
-    DeckView()
+    DeckView(
+      deck: FlashDeck(from: ChallengesViewModel().challenges),
+      onMemorized: {}
+    )
   }
 }
