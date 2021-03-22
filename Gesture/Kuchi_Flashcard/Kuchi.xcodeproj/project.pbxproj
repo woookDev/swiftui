@@ -32,6 +32,7 @@
 		6758886022DA0C0B0015DE4B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6758885F22DA0C0B0015DE4B /* Preview Assets.xcassets */; };
 		6758886322DA0C0B0015DE4B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6758886122DA0C0B0015DE4B /* LaunchScreen.storyboard */; };
 		67D0F51022E70EE6009CC869 /* jp.json in Resources */ = {isa = PBXBuildFile; fileRef = 67D0F50F22E70EE6009CC869 /* jp.json */; };
+		8843F8CC2607A3040088E1C9 /* LearningStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8843F8CB2607A3040088E1C9 /* LearningStore.swift */; };
 		888AAA0526023F0300756135 /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AAA0426023F0300756135 /* LearnView.swift */; };
 		888AAA0926023F5700756135 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AAA0826023F5700756135 /* HomeView.swift */; };
 		888AAA0C260257C300756135 /* FlashCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AAA0B260257C300756135 /* FlashCard.swift */; };
@@ -67,6 +68,7 @@
 		6758886422DA0C0B0015DE4B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6758888C22DA0F3C0015DE4B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		67D0F50F22E70EE6009CC869 /* jp.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = jp.json; sourceTree = "<group>"; };
+		8843F8CB2607A3040088E1C9 /* LearningStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearningStore.swift; sourceTree = "<group>"; };
 		888AAA0426023F0300756135 /* LearnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnView.swift; sourceTree = "<group>"; };
 		888AAA0826023F5700756135 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		888AAA0B260257C300756135 /* FlashCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashCard.swift; sourceTree = "<group>"; };
@@ -214,6 +216,7 @@
 				888AAA0426023F0300756135 /* LearnView.swift */,
 				888AAA0B260257C300756135 /* FlashCard.swift */,
 				888AAA0E260259AB00756135 /* FlashDeck.swift */,
+				8843F8CB2607A3040088E1C9 /* LearningStore.swift */,
 			);
 			path = Learn;
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 				6758885922DA0C090015DE4B /* SceneDelegate.swift in Sources */,
 				57B416252328679F00647280 /* ChallengeView.swift in Sources */,
 				5764105F23304B400060CADD /* QuestionView.swift in Sources */,
+				8843F8CC2607A3040088E1C9 /* LearningStore.swift in Sources */,
 				570CAF4722FEBD82003D2DC4 /* LogoImage.swift in Sources */,
 				5794FEBB23022A800018E788 /* Settings.swift in Sources */,
 				888AAA0C260257C300756135 /* FlashCard.swift in Sources */,
