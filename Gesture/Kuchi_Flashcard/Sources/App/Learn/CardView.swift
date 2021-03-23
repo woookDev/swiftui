@@ -94,8 +94,9 @@ struct CardView: View {
     .frame(width: 320, height: 210)
     .animation(.spring())
     .offset(self.offset)
-    .gesture(longPress).scaleEffect(isLongPressed ? 1.1 : 1)
-    .gesture(TapGesture().onEnded({ _ in
+    .gesture(longPress)
+    .scaleEffect(isLongPressed ? 1.1 : 1)
+    .simultaneousGesture(TapGesture().onEnded({ _ in
       withAnimation(.easeIn, {
         self.revealed = !self.revealed
       })
