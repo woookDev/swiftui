@@ -36,25 +36,54 @@ struct WelcomeView: View {
   @StateObject var flightInfo = FlightData()
 
   var body: some View {
-    VStack(alignment: .leading) {
+    // 1
+    NavigationView {
       ZStack(alignment: .topLeading) {
-        // Background
+        // 2
         Image("welcome-background")
           .resizable()
           .aspectRatio(contentMode: .fill)
-          .frame(width: 375, height: 250)
-          .clipped()
-        //Title
-        VStack {
-          Text("Mountain Airport")
-            .font(.system(size: 28.0, weight: .bold))
-          Text("Flight Status")
-        }
+          .frame(height: 250)
+        VStack(alignment: .leading) {
+          // 3
+          NavigationLink( // 4
+            destination: FlightStatusBoard()
+          ) {
+            // 5
+            Text("Flight Status")
+          }
+          Spacer()
+        }.font(.title)
         .foregroundColor(.white)
         .padding()
+        // 6
       }
-      Spacer()
-    }.font(.title)
+      .navigationTitle("Mountain Airport")
+    }
+    
+    /*// 1
+    NavigationView {
+      //VStack(alignment: .leading) {
+        ZStack(alignment: .topLeading) {
+          // Background
+          Image("welcome-background")
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 375, height: 250)
+            .clipped()
+          //Title
+          VStack {
+            Text("Mountain Airport")
+              .font(.system(size: 28.0, weight: .bold))
+            Text("Flight Status")
+          }
+          .foregroundColor(.white)
+          .padding()
+        }
+        Spacer()
+      //}.font(.title)
+    }
+    .navigationTitle("Mountain Airport")*/
   }
 }
 
