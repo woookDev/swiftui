@@ -67,6 +67,11 @@ struct CardView: View {
         }
       }
     
+    let longPress = LongPressGesture().updating($isLongPressed) { value, state, transition in
+      state = value
+    }
+    .simultaneously(with: drag)
+    
     return ZStack {
       Rectangle()
         .fill(Color.red)
@@ -89,7 +94,7 @@ struct CardView: View {
     .frame(width: 320, height: 210)
     .animation(.spring())
     .offset(self.offset)
-    .gesture(drag)
+    .gesture(longPress).scaleEffect(isLongPressed ? 1.1 : 1)
     .gesture(TapGesture().onEnded({ _ in
       withAnimation(.easeIn, {
         self.revealed = !self.revealed
