@@ -35,8 +35,18 @@ import SwiftUI
 struct CardView: View {
   let flashCard: FlashCard
   
-  init(_ card: FlashCard) {
+  @State var revealed = false
+  typealias CardDrag = (_ card: FlashCard,
+                        _ direction: DiscardedDirection) -> Void
+  let dragged: CardDrag
+  @GestureState var isLongPressed = false
+  
+  init(
+    _ card: FlashCard,
+    onDrag dragged: @escaping CardDrag = { _,_ in }
+  ) {
     self.flashCard = card
+    self.dragged = dragged
   }
   
   var body: some View {
@@ -50,16 +60,22 @@ struct CardView: View {
         Text(flashCard.card.question)
           .font(.largeTitle)
           .foregroundColor(.white)
-        Text(flashCard.card.answer)
-          .font(.caption)
-          .foregroundColor(.white)
+        if self.revealed {
+          Text(flashCard.card.answer)
+            .font(.caption)
+            .foregroundColor(.white)
+        }
         Spacer()
       }
     }
     .shadow(radius: 8)
     .frame(width: 320, height: 210)
     .animation(.spring())
-    
+    .gesture(TapGesture().onEnded({ _ in
+      withAnimation(.easeIn, {
+        self.revealed = !self.revealed
+      })
+    }))
   }
 }
 

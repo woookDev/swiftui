@@ -1,4 +1,4 @@
-/// Copyright (c) 2021 Razeware LLC
+/// Copyright (c) 2020 Razeware LLC
 /// 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -32,54 +32,23 @@
 
 import SwiftUI
 
-enum DiscardedDirection {
-  case left
-  case right
-}
-
-struct DeckView: View {
-  @ObservedObject var deck: FlashDeck
-  
-  let onMemorized: () -> Void
-  
-  init(deck: FlashDeck, onMemorized: @escaping () -> Void) {
-    self.onMemorized = onMemorized
-    self.deck = deck
-  }
-  
-  var body: some View {
-    ZStack {
-      ForEach(deck.cards.filter { $0.isActive }) {
-        card in
-        self.getCardView(for: card)
-      }
+enum Appearance: Int, CaseIterable, Identifiable {
+  case light, dark, automatic
+  var id: Int { self.rawValue }
+  var name: String {
+    switch self {
+    case .light: return "Light"
+    case .dark: return "Dark"
+    case .automatic: return "Automatic"
     }
   }
   
-  func getCardView(for card: FlashCard) -> CardView {
-    let activeCards = deck.cards.filter { $0.isActive == true }
-    if let lastCard = activeCards.last {
-      if lastCard == card {
-        return createCardView(for: card)
-      }
+  func getColorScheme() -> ColorScheme? {
+    switch self {
+    case .automatic: return nil
+    case .light: return .light
+    case .dark: return .dark
     }
-    
-    let view = createCardView(for: card)
-    return view
-  }
-  
-  func createCardView(for card: FlashCard) -> CardView {
-    let view = CardView(card)
-    
-    return view
   }
 }
 
-struct DeckView_Previews: PreviewProvider {
-  static var previews: some View {
-    DeckView(
-      deck: FlashDeck(from: ChallengesViewModel().challenges),
-      onMemorized: {}
-    )
-  }
-}

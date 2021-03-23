@@ -61,6 +61,19 @@ struct HomeView: View {
         }
         .tag(1)
           .environment(\.questionsPerSession, challengesViewModel.numberOfQuestions)
+        
+        if #available(iOS 14.0, *) {
+          SettingsView()
+            .tabItem({
+              VStack {
+                Image(systemName: "gear")
+                Text("Settings")
+              }
+            })
+            .tag(2)
+        } else {
+          // Fallback on earlier versions
+        }
       }
       // 2
       .accentColor(.orange)
