@@ -69,7 +69,11 @@ struct DeckView: View {
   }
   
   func createCardView(for card: FlashCard) -> CardView {
-    let view = CardView(card)
+    let view = CardView(card) { card, direction in
+      if direction == .left {
+        self.onMemorized()
+      }
+    }
     
     return view
   }

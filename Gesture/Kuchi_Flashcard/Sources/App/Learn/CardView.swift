@@ -36,6 +36,7 @@ struct CardView: View {
   let flashCard: FlashCard
   
   @State var revealed = false
+  @State var offset: CGSize = .zero
   typealias CardDrag = (_ card: FlashCard,
                         _ direction: DiscardedDirection) -> Void
   let dragged: CardDrag
@@ -50,7 +51,23 @@ struct CardView: View {
   }
   
   var body: some View {
-    ZStack {
+    let drag = DragGesture()
+    // 1
+      .onChanged { self.offset = $0.translation }
+    // 2
+      .onEnded {
+        if $0.translation.width < -100 {
+          self.offset = .init(width: -1000, height: 0)
+          self.dragged(self.flashCard, .left)
+        } else if $0.translation.width > 100 {
+          self.offset = .init(width: 1000, height: 0)
+          self.dragged(self.flashCard, .right)
+        } else {
+          self.offset = .zero
+        }
+      }
+    
+    return ZStack {
       Rectangle()
         .fill(Color.red)
         .frame(width: 320, height: 210)
@@ -71,6 +88,8 @@ struct CardView: View {
     .shadow(radius: 8)
     .frame(width: 320, height: 210)
     .animation(.spring())
+    .offset(self.offset)
+    .gesture(drag)
     .gesture(TapGesture().onEnded({ _ in
       withAnimation(.easeIn, {
         self.revealed = !self.revealed
