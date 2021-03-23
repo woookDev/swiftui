@@ -60,6 +60,7 @@ struct WelcomeView: View {
       }
       .navigationTitle("Mountain Airport")
     }
+    .navigationViewStyle(StackNavigationViewStyle())
     
     /*// 1
     NavigationView {
