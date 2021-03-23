@@ -33,13 +33,19 @@
 import SwiftUI
 
 struct FlightStatusBoard: View {
+  var flights: [FlightInformation]
+  
   var body: some View {
-    Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    List(flights, id: \.id) { flight in
+      Text(flight.statusBoardName)
+    }.navigationBarTitle("Flight Status")
   }
 }
-
+ 
 struct FlightStatusBoard_Previews: PreviewProvider {
   static var previews: some View {
-    FlightStatusBoard()
+    NavigationView {
+      FlightStatusBoard(flights: FlightData.generateTestFlights(date: Date()))
+    }
   }
 }

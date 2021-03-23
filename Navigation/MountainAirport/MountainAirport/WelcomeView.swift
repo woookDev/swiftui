@@ -47,10 +47,10 @@ struct WelcomeView: View {
         VStack(alignment: .leading) {
           // 3
           NavigationLink( // 4
-            destination: FlightStatusBoard()
+            destination: FlightStatusBoard(flights: FlightData.generateTestFlights(date: Date()))
           ) {
             // 5
-            Text("Flight Status")
+            WelcomeButtonView(title: "Flight Status", subTitle: "Departure and arrival information")
           }
           Spacer()
         }.font(.title)

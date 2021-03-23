@@ -42,11 +42,19 @@ struct WelcomeButtonView: View {
         .foregroundColor(.white)
     }
     .padding()
+    // 1
+    .frame(maxWidth: .infinity, alignment: .leading)
+    // 2
+    .background(
+      Image("link-pattern")
+        .resizable()
+        .clipped()
+    )
   }
 }
 
 struct WelcomeButtonView_Previews: PreviewProvider {
   static var previews: some View {
-    WelcomeButtonView()
+    WelcomeButtonView(title: "Flight Status", subTitle: "Departure and Arrival Information")
   }
 }
