@@ -35,69 +35,41 @@ import SwiftUI
 struct WelcomeView: View {
   @StateObject var flightInfo = FlightData()
   @State var showNextFlight = false
+  @StateObject var appEnvironment = AppEnvironment()
 
   var body: some View {
-    // 1
     NavigationView {
       ZStack(alignment: .topLeading) {
-        // 2
         Image("welcome-background")
           .resizable()
           .aspectRatio(contentMode: .fill)
           .frame(height: 250)
-        VStack(alignment: .leading) {
-          // 3
+        if
+          let id = appEnvironment.lastFlightId,
+          let lastFlight = flightInfo.getFlightById(id) {
           NavigationLink(
-            destination: FlightDetails(flight: flightInfo.flights.first!),
-            isActive: $showNextFlight) { }
-          
-          NavigationLink( // 4
-            destination: FlightStatusBoard(flights: FlightData.generateTestFlights(date: Date()))
-          ) {
-            Button(action: {
-              showNextFlight = true
-            }, label: {
-              WelcomeButtonView(
-                title: "First Flight",
-                subTitle: "Detail for First Flight of the Day"
-              )
-            })
-            // 5
-            WelcomeButtonView(title: "Flight Status", subTitle: "Departure and arrival information")
-          }
-          Spacer()
-        }.font(.title)
-        .foregroundColor(.white)
-        .padding()
-        // 6
-      }
-      .navigationTitle("Mountain Airport")
-    }
-    .navigationViewStyle(StackNavigationViewStyle())
-    
-    /*// 1
-    NavigationView {
-      //VStack(alignment: .leading) {
-        ZStack(alignment: .topLeading) {
-          // Background
-          Image("welcome-background")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 375, height: 250)
-            .clipped()
-          //Title
+            destination: FlightDetails(flight: lastFlight),
+            isActive: $showNextFlight
+          ) { }
+        }
+        ScrollView {
           VStack {
-            Text("Mountain Airport")
-              .font(.system(size: 28.0, weight: .bold))
-            Text("Flight Status")
-          }
+            FlightStatusButton(flightInfo: flightInfo)
+            SearchFlightsButton(flightInfo: flightInfo)
+            AwardsButton()
+            LastViewedButton(
+              flightInfo: flightInfo,
+              appEnvironment: appEnvironment,
+              showNextFlight: $showNextFlight
+            )
+          }.font(.title)
           .foregroundColor(.white)
           .padding()
         }
-        Spacer()
-      //}.font(.title)
-    }
-    .navigationTitle("Mountain Airport")*/
+      }.navigationBarTitle("Mountain Airport")
+      // End Navigation View
+    }.navigationViewStyle(StackNavigationViewStyle())
+    .environmentObject(appEnvironment)
   }
 }
 

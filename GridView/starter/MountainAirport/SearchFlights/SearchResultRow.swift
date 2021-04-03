@@ -32,77 +32,38 @@
 
 import SwiftUI
 
-struct WelcomeView: View {
-  @StateObject var flightInfo = FlightData()
-  @State var showNextFlight = false
+struct SearchResultRow: View {
+  var flight: FlightInformation
+
+  var timeFormatter: DateFormatter {
+    let tdf = DateFormatter()
+    tdf.timeStyle = .short
+    tdf.dateStyle = .medium
+    return tdf
+  }
 
   var body: some View {
-    // 1
-    NavigationView {
-      ZStack(alignment: .topLeading) {
-        // 2
-        Image("welcome-background")
-          .resizable()
-          .aspectRatio(contentMode: .fill)
-          .frame(height: 250)
-        VStack(alignment: .leading) {
-          // 3
-          NavigationLink(
-            destination: FlightDetails(flight: flightInfo.flights.first!),
-            isActive: $showNextFlight) { }
-          
-          NavigationLink( // 4
-            destination: FlightStatusBoard(flights: FlightData.generateTestFlights(date: Date()))
-          ) {
-            Button(action: {
-              showNextFlight = true
-            }, label: {
-              WelcomeButtonView(
-                title: "First Flight",
-                subTitle: "Detail for First Flight of the Day"
-              )
-            })
-            // 5
-            WelcomeButtonView(title: "Flight Status", subTitle: "Departure and arrival information")
-          }
-          Spacer()
-        }.font(.title)
-        .foregroundColor(.white)
-        .padding()
-        // 6
-      }
-      .navigationTitle("Mountain Airport")
-    }
-    .navigationViewStyle(StackNavigationViewStyle())
-    
-    /*// 1
-    NavigationView {
-      //VStack(alignment: .leading) {
-        ZStack(alignment: .topLeading) {
-          // Background
-          Image("welcome-background")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 375, height: 250)
-            .clipped()
-          //Title
-          VStack {
-            Text("Mountain Airport")
-              .font(.system(size: 28.0, weight: .bold))
-            Text("Flight Status")
-          }
-          .foregroundColor(.white)
-          .padding()
+    HStack {
+      FlightStatusIcon(flight: flight)
+        .padding(5)
+        .clipShape(RoundedRectangle(cornerRadius: 7.0))
+      VStack(alignment: .leading) {
+        Text(flight.flightName)
+          .font(.title3) +
+          Text(" \(flight.dirString) \(flight.otherAirport)")
+        HStack {
+          Text(flight.localTime, formatter: timeFormatter)
+            .foregroundColor(.gray)
         }
-        Spacer()
-      //}.font(.title)
+      }
     }
-    .navigationTitle("Mountain Airport")*/
   }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct SearchResultRow_Previews: PreviewProvider {
   static var previews: some View {
-    WelcomeView()
+    SearchResultRow(
+      flight: FlightData.generateTestFlight(date: Date())
+    )
   }
 }

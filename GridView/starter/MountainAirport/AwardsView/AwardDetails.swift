@@ -32,77 +32,52 @@
 
 import SwiftUI
 
-struct WelcomeView: View {
-  @StateObject var flightInfo = FlightData()
-  @State var showNextFlight = false
+struct AwardDetails: View {
+  var award: AwardInformation
+
+  func imageSize(proxy: GeometryProxy) -> CGFloat {
+    let size = min(proxy.size.width, proxy.size.height)
+    return size * 0.8
+  }
 
   var body: some View {
-    // 1
-    NavigationView {
-      ZStack(alignment: .topLeading) {
-        // 2
-        Image("welcome-background")
-          .resizable()
-          .aspectRatio(contentMode: .fill)
-          .frame(height: 250)
-        VStack(alignment: .leading) {
-          // 3
-          NavigationLink(
-            destination: FlightDetails(flight: flightInfo.flights.first!),
-            isActive: $showNextFlight) { }
-          
-          NavigationLink( // 4
-            destination: FlightStatusBoard(flights: FlightData.generateTestFlights(date: Date()))
-          ) {
-            Button(action: {
-              showNextFlight = true
-            }, label: {
-              WelcomeButtonView(
-                title: "First Flight",
-                subTitle: "Detail for First Flight of the Day"
-              )
-            })
-            // 5
-            WelcomeButtonView(title: "Flight Status", subTitle: "Departure and arrival information")
-          }
-          Spacer()
-        }.font(.title)
-        .foregroundColor(.white)
+    VStack(alignment: .center) {
+      Image(award.imageName)
+        .resizable()
+        .aspectRatio(contentMode: .fit)
         .padding()
-        // 6
-      }
-      .navigationTitle("Mountain Airport")
-    }
-    .navigationViewStyle(StackNavigationViewStyle())
-    
-    /*// 1
-    NavigationView {
-      //VStack(alignment: .leading) {
-        ZStack(alignment: .topLeading) {
-          // Background
-          Image("welcome-background")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 375, height: 250)
-            .clipped()
-          //Title
-          VStack {
-            Text("Mountain Airport")
-              .font(.system(size: 28.0, weight: .bold))
-            Text("Flight Status")
-          }
-          .foregroundColor(.white)
-          .padding()
-        }
-        Spacer()
-      //}.font(.title)
-    }
-    .navigationTitle("Mountain Airport")*/
+      Text(award.title)
+        .font(.title)
+        .padding()
+      Text(award.description)
+        .font(.body)
+        .padding()
+      Spacer()
+    }.padding()
+    .opacity(award.awarded ? 1.0 : 0.4)
+    .saturation(award.awarded ? 1 : 0)
   }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct AwardDetails_Previews: PreviewProvider {
   static var previews: some View {
-    WelcomeView()
+    let award = AwardInformation(
+      imageName: "first-visit-award",
+      title: "First Visit",
+      description: "Awarded the first time you open the app while at the airport.",
+      awarded: true
+    )
+
+    let award2 = AwardInformation(
+      imageName: "rainy-day-award",
+      title: "Rainy Day",
+      description: "Your flight was delayed because of weather.",
+      awarded: false
+    )
+
+    Group {
+      AwardDetails(award: award)
+      AwardDetails(award: award2)
+    }
   }
 }

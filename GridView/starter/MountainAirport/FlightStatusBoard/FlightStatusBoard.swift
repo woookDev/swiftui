@@ -32,77 +32,58 @@
 
 import SwiftUI
 
-struct WelcomeView: View {
-  @StateObject var flightInfo = FlightData()
-  @State var showNextFlight = false
+struct FlightStatusBoard: View {
+  var flights: [FlightInformation]
+  @State private var hidePast = false
+  @AppStorage("FlightStatusCurrentTab") var selectedTab = 1
+
+  var shownFlights: [FlightInformation] {
+    hidePast ?
+      flights.filter { $0.localTime >= Date() } :
+      flights
+  }
 
   var body: some View {
-    // 1
-    NavigationView {
-      ZStack(alignment: .topLeading) {
-        // 2
-        Image("welcome-background")
+    TabView(selection: $selectedTab) {
+      FlightList(
+        flights: shownFlights.filter { $0.direction == .arrival }
+      ).tabItem {
+        Image("descending-airplane")
           .resizable()
-          .aspectRatio(contentMode: .fill)
-          .frame(height: 250)
-        VStack(alignment: .leading) {
-          // 3
-          NavigationLink(
-            destination: FlightDetails(flight: flightInfo.flights.first!),
-            isActive: $showNextFlight) { }
-          
-          NavigationLink( // 4
-            destination: FlightStatusBoard(flights: FlightData.generateTestFlights(date: Date()))
-          ) {
-            Button(action: {
-              showNextFlight = true
-            }, label: {
-              WelcomeButtonView(
-                title: "First Flight",
-                subTitle: "Detail for First Flight of the Day"
-              )
-            })
-            // 5
-            WelcomeButtonView(title: "Flight Status", subTitle: "Departure and arrival information")
-          }
-          Spacer()
-        }.font(.title)
-        .foregroundColor(.white)
-        .padding()
-        // 6
+        Text("Arrivals")
       }
-      .navigationTitle("Mountain Airport")
-    }
-    .navigationViewStyle(StackNavigationViewStyle())
-    
-    /*// 1
-    NavigationView {
-      //VStack(alignment: .leading) {
-        ZStack(alignment: .topLeading) {
-          // Background
-          Image("welcome-background")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 375, height: 250)
-            .clipped()
-          //Title
-          VStack {
-            Text("Mountain Airport")
-              .font(.system(size: 28.0, weight: .bold))
-            Text("Flight Status")
-          }
-          .foregroundColor(.white)
-          .padding()
-        }
-        Spacer()
-      //}.font(.title)
-    }
-    .navigationTitle("Mountain Airport")*/
+      .tag(0)
+      FlightList(
+        flights: shownFlights
+      ).tabItem {
+        Image(systemName: "airplane")
+          .resizable()
+        Text("All")
+      }
+      .tag(1)
+      FlightList(
+        flights: shownFlights.filter { $0.direction == .departure }
+      ).tabItem {
+        Image("ascending-airplane")
+        Text("Departures")
+      }
+      .tag(2)
+    }.navigationTitle("Flight Status")
+    .navigationBarItems(
+      trailing: Toggle(
+        "Hide Past",
+        isOn: $hidePast
+      )
+    )
   }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct FlightStatusBoard_Previews: PreviewProvider {
   static var previews: some View {
-    WelcomeView()
+    NavigationView {
+      FlightStatusBoard(
+        flights: FlightData.generateTestFlights(date: Date())
+      )
+    }
   }
 }

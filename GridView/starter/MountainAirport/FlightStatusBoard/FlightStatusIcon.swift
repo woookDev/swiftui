@@ -32,77 +32,55 @@
 
 import SwiftUI
 
-struct WelcomeView: View {
-  @StateObject var flightInfo = FlightData()
-  @State var showNextFlight = false
+struct FlightStatusIcon: View {
+  var flight: FlightInformation
 
   var body: some View {
-    // 1
-    NavigationView {
-      ZStack(alignment: .topLeading) {
-        // 2
-        Image("welcome-background")
-          .resizable()
-          .aspectRatio(contentMode: .fill)
-          .frame(height: 250)
-        VStack(alignment: .leading) {
-          // 3
-          NavigationLink(
-            destination: FlightDetails(flight: flightInfo.flights.first!),
-            isActive: $showNextFlight) { }
-          
-          NavigationLink( // 4
-            destination: FlightStatusBoard(flights: FlightData.generateTestFlights(date: Date()))
-          ) {
-            Button(action: {
-              showNextFlight = true
-            }, label: {
-              WelcomeButtonView(
-                title: "First Flight",
-                subTitle: "Detail for First Flight of the Day"
-              )
-            })
-            // 5
-            WelcomeButtonView(title: "Flight Status", subTitle: "Departure and arrival information")
-          }
-          Spacer()
-        }.font(.title)
+    if flight.status == .canceled {
+      Image(systemName: "nosign")
+        .resizable()
+        .frame(width: 30, height: 30)
         .foregroundColor(.white)
-        .padding()
-        // 6
-      }
-      .navigationTitle("Mountain Airport")
+        .background(
+          RoundedRectangle(cornerRadius: 2)
+            .frame(width: 40, height: 40)
+            .foregroundColor(.red)
+        )
+        .frame(width: 40, height: 40)
+    } else if flight.direction == .arrival {
+      Image(systemName: "airplane")
+        .resizable()
+        .frame(width: 30, height: 30)
+        .rotationEffect(.degrees(45.0))
+        .foregroundColor(.white)
+        .background(
+          RoundedRectangle(cornerRadius: 2)
+            .frame(width: 40, height: 40)
+            .foregroundColor(
+              Color(red: 0.89, green: 0.33, blue: 0.69)
+            )
+        )
+    } else if flight.direction == .departure {
+      Image(systemName: "airplane")
+        .resizable()
+        .frame(width: 30, height: 30)
+        .rotationEffect(.degrees(-45.0))
+        .foregroundColor(.white)
+        .background(
+          RoundedRectangle(cornerRadius: 2)
+            .frame(width: 40, height: 40)
+            .foregroundColor(
+              Color(red: 0.19, green: 0.15, blue: 0.91)
+            )
+        )
     }
-    .navigationViewStyle(StackNavigationViewStyle())
-    
-    /*// 1
-    NavigationView {
-      //VStack(alignment: .leading) {
-        ZStack(alignment: .topLeading) {
-          // Background
-          Image("welcome-background")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 375, height: 250)
-            .clipped()
-          //Title
-          VStack {
-            Text("Mountain Airport")
-              .font(.system(size: 28.0, weight: .bold))
-            Text("Flight Status")
-          }
-          .foregroundColor(.white)
-          .padding()
-        }
-        Spacer()
-      //}.font(.title)
-    }
-    .navigationTitle("Mountain Airport")*/
   }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct FlightStatusIcon_Previews: PreviewProvider {
   static var previews: some View {
-    WelcomeView()
+    FlightStatusIcon(
+      flight: FlightData.generateTestFlight(date: Date())
+    )
   }
 }
