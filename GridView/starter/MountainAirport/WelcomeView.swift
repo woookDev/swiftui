@@ -53,7 +53,31 @@ struct WelcomeView: View {
           ) { }
         }
         ScrollView {
+          
+          // 1
           VStack {
+            // 2
+            HStack {
+              FlightStatusButton(flightInfo: flightInfo)
+              Spacer()
+              SearchFlightsButton(flightInfo: flightInfo)
+            }
+            // 3
+            HStack {
+              AwardsButton()
+              // 4
+              LastViewedButton(
+                flightInfo: flightInfo,
+                appEnvironment: appEnvironment,
+                showNextFlight: $showNextFlight
+              )
+            }
+            Spacer()
+          }
+          .font(.title)
+          .foregroundColor(.white)
+          .padding()
+          /*VStack {
             FlightStatusButton(flightInfo: flightInfo)
             SearchFlightsButton(flightInfo: flightInfo)
             AwardsButton()
@@ -64,7 +88,7 @@ struct WelcomeView: View {
             )
           }.font(.title)
           .foregroundColor(.white)
-          .padding()
+          .padding()*/
         }
       }.navigationBarTitle("Mountain Airport")
       // End Navigation View
