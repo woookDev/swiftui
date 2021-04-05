@@ -30,15 +30,35 @@ import SwiftUI
 
 struct FlightList: View {
   var flights: [FlightInformation]
+  
+  var nextFlightID: Int {
+    guard let flight = flights.first(
+            where: {
+              $0.localTime >= Date()
+            }
+    ) else {
+      return flights.last!.id
+    }
+    return flight.id
+  }
 
   var body: some View {
-    ScrollView([.horizontal, .vertical]) {
-      VStack {
-        ForEach(flights) { flight in
-          NavigationLink(
-            destination: FlightDetails(flight: flight)) {
-            FlightRow(flight: flight)
+    ScrollViewReader { scrollProxy in
+      ScrollView([.horizontal, .vertical]) {
+        LazyVStack {
+          ForEach(flights) { flight in
+            NavigationLink(
+              destination: FlightDetails(flight: flight)) {
+              FlightRow(flight: flight)
+            }
           }
+        }
+      }
+      .onAppear {
+        // 1
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+          // 2
+          scrollProxy.scrollTo(nextFlightID)
         }
       }
     }
