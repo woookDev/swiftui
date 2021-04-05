@@ -44,14 +44,10 @@ struct FlightList: View {
 
   var body: some View {
     ScrollViewReader { scrollProxy in
-      ScrollView([.horizontal, .vertical]) {
-        LazyVStack {
-          ForEach(flights) { flight in
-            NavigationLink(
-              destination: FlightDetails(flight: flight)) {
-              FlightRow(flight: flight)
-            }
-          }
+      List(flights) { flight in
+        NavigationLink(
+          destination: FlightDetails(flight: flight)) {
+          FlightRow(flight: flight)
         }
       }
       .onAppear {

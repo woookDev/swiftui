@@ -48,6 +48,22 @@ struct SearchFlights: View {
 
     return matchingFlights
   }
+  
+  struct HierarchicalFlightRow: Identifiable {
+    var label: String
+    var flight: FlightInformation?
+    var children: [HierarchicalFlightRow]?
+    
+    var id = UUID()
+  }
+  
+  func hierarchicalFlightRowFromFlight(_ flight: FlightInformation) -> HierarchicalFlightRow {
+    return HierarchicalFlightRow(
+      label: longDateFormatter.string(from: flight.localTime),
+      flight: flight,
+      children: nil
+    )
+  }
 
   var body: some View {
     ZStack {
@@ -66,7 +82,9 @@ struct SearchFlights: View {
         .pickerStyle(SegmentedPickerStyle())
         TextField(" Search cities", text: $city)
           .textFieldStyle(RoundedBorderTextFieldStyle())
-        // Insert Results
+        List(matchingFlights) { flight in
+          SearchResultRow(flight: flight)
+        }
         Spacer()
       }.navigationBarTitle("Search Flights")
       .padding()
