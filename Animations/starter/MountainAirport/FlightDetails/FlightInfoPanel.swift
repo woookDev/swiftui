@@ -73,7 +73,8 @@ struct FlightInfoPanel: View {
               .resizable()
               .frame(width: 30, height: 30)
               .padding(10)
-              .rotationEffect(.degrees(showTerminal ? 90 : -90))
+              .rotationEffect(.degrees(showTerminal ? 90 : 270))
+              .animation(.linear(duration: 2.0))
           }
         })
         if showTerminal {
