@@ -64,6 +64,31 @@ struct SearchFlights: View {
       children: nil
     )
   }
+  
+  var flightDates: [Date] {
+    let allDates = matchingFlights.map { $0.localTime.dateOnly }
+    let uniqueDates = Array(Set(allDates))
+    return uniqueDates.sorted()
+  }
+  
+  func flightsForDay(date: Date) -> [FlightInformation] {
+    matchingFlights.filter {
+      Calendar.current.isDate($0.localTime, inSameDayAs: date)
+    }
+  }
+  
+  var hierarchicalFlights: [HierarchicalFlightRow] {
+    // 1
+    var rows: [HierarchicalFlightRow] = []
+    
+    // 2
+    for date in flightDates {
+      // 3
+      let newRow = HierarchicalFlightRow(label: longDateFormatter.string(from: date), children: flightsForDay(date: date).map { hierarchicalFlightRowFromFlight($0)})
+      rows.append(newRow)
+    }
+    return rows
+  }
 
   var body: some View {
     ZStack {
@@ -82,9 +107,31 @@ struct SearchFlights: View {
         .pickerStyle(SegmentedPickerStyle())
         TextField(" Search cities", text: $city)
           .textFieldStyle(RoundedBorderTextFieldStyle())
-        List(matchingFlights) { flight in
-          SearchResultRow(flight: flight)
-        }
+        /*List(hierarchicalFlights, children: \.children) { row in
+          // 2
+          if let flight = row.flight {
+            SearchResultRow(flight: flight)
+          } else {
+            Text(row.label)
+          }
+        }*/
+        // 1
+        List {
+          // 2
+          ForEach(flightDates, id: \.hashValue) { date in
+            // 3
+            Section(header: Text(longDateFormatter.string(from: date)), footer: HStack {
+              Spacer()
+              Text("Matching flights " + "\(flightsForDay(date: date).count)")
+            }) {
+              // 6
+              ForEach(flightsForDay(date: date)) { flight in
+                SearchResultRow(flight: flight)
+              }
+            }
+          }
+        }.listStyle(InsetGroupedListStyle())
+        
         Spacer()
       }.navigationBarTitle("Search Flights")
       .padding()
