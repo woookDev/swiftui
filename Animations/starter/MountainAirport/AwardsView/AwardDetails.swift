@@ -32,57 +32,52 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
-  var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
+struct AwardDetails: View {
+  var award: AwardInformation
+
+  func imageSize(proxy: GeometryProxy) -> CGFloat {
+    let size = min(proxy.size.width, proxy.size.height)
+    return size * 0.8
+  }
 
   var body: some View {
-    ZStack {
-      Image("background-view")
+    VStack(alignment: .center) {
+      Image(award.imageName)
         .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
-        }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
-          )
-        Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
-    }
+        .aspectRatio(contentMode: .fit)
+        .padding()
+      Text(award.title)
+        .font(.title)
+        .padding()
+      Text(award.description)
+        .font(.body)
+        .padding()
+      Spacer()
+    }.padding()
+    .opacity(award.awarded ? 1.0 : 0.4)
+    .saturation(award.awarded ? 1 : 0)
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct AwardDetails_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+    let award = AwardInformation(
+      imageName: "first-visit-award",
+      title: "First Visit",
+      description: "Awarded the first time you open the app while at the airport.",
+      awarded: true
+    )
+
+    let award2 = AwardInformation(
+      imageName: "rainy-day-award",
+      title: "Rainy Day",
+      description: "Your flight was delayed because of weather.",
+      awarded: false
+    )
+
+    Group {
+      AwardDetails(award: award)
+      AwardDetails(award: award2)
+    }
   }
 }

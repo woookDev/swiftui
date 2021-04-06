@@ -32,57 +32,36 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
+struct SearchResultRow: View {
   var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
+  @State private var isPresented = false
 
   var body: some View {
-    ZStack {
-      Image("background-view")
-        .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
-        }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
+    Button(
+      action: {
+        isPresented.toggle()
+      }, label: {
+        FlightSearchSummary(flight: flight)
+      })
+      .sheet(
+        isPresented: $isPresented,
+        onDismiss: {
+          print("Modal dismissed. State now: \(self.isPresented)")
+        },
+        content: {
+          FlightSearchDetails(
+            flight: flight,
+            showModal: $isPresented
           )
-        Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
-    }
+        }
+      )
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct SearchResultRow_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
+    SearchResultRow(
+      flight: FlightData.generateTestFlight(date: Date())
     ).environmentObject(AppEnvironment())
   }
 }

@@ -32,57 +32,51 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
-  var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
-
-  var body: some View {
-    ZStack {
-      Image("background-view")
-        .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
-        }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
-          )
-        Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
+class SavedFlights: ObservableObject {
+  @Published var savedFlightIds: [Int] = []
+  @AppStorage("SavedFlight") var savedFlightStorage = "" {
+    didSet {
+      savedFlightIds = getSavedFlights()
     }
   }
-}
 
-struct FlightSearchDetails_Previews: PreviewProvider {
-  static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+  init() {
+    savedFlightIds = getSavedFlights()
+  }
+
+  init(flightId: Int) {
+    savedFlightIds = [flightId]
+  }
+
+  init(flightIds: [Int]) {
+    savedFlightIds = flightIds
+  }
+
+  func isFlightSaved(_ flight: FlightInformation) -> Bool {
+    let flightIds = savedFlightStorage.split(separator: ",").compactMap { Int($0) }
+    let matching = flightIds.filter { $0 == flight.id }
+    return matching.isEmpty == false
+  }
+
+  func saveFight(_ flight: FlightInformation) {
+    if !isFlightSaved(flight) {
+      print("Saving flight: \(flight.id)")
+      var flights = savedFlightStorage.split(separator: ",").compactMap { Int($0) }
+      flights.append(flight.id)
+      savedFlightStorage = flights.map { String($0) }.joined(separator: ",")
+    }  }
+
+  func removeSavedFlight(_ flight: FlightInformation) {
+    if isFlightSaved(flight) {
+      print("Removing saved flight: \(flight.id)")
+      let flights = savedFlightStorage.split(separator: ",").compactMap { Int($0) }
+      let newFlights = flights.filter { $0 != flight.id }
+      savedFlightStorage = newFlights.map { String($0) }.joined(separator: ",")
+    }
+  }
+
+  func getSavedFlights() -> [Int] {
+    let flightIds = savedFlightStorage.split(separator: ",").compactMap { Int($0) }
+    return flightIds
   }
 }

@@ -32,57 +32,25 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
-  var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
-
-  var body: some View {
-    ZStack {
-      Image("background-view")
-        .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
-        }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
-          )
-        Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
-    }
-  }
+struct AwardInformation {
+  public var imageName: String
+  public var title: String
+  public var description: String
+  public var awarded: Bool
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
-  static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+extension AwardInformation: Hashable {
+  static func == (lhs: AwardInformation, rhs: AwardInformation) -> Bool {
+    if lhs.title == rhs.title && lhs.description == rhs.description && lhs.awarded == rhs.awarded {
+      return true
+    }
+
+    return false
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(title)
+    hasher.combine(description)
+    hasher.combine(awarded)
   }
 }

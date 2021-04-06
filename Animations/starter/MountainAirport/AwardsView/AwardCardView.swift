@@ -32,57 +32,46 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
-  var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
+struct AwardCardView: View {
+  var award: AwardInformation
 
   var body: some View {
-    ZStack {
-      Image("background-view")
-        .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
-        }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
-          )
-        Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
+    VStack {
+      Image(award.imageName)
+        .shadow(radius: 10)
+      Text(award.title)
+        .font(.title3)
+      Text(award.description)
+        .font(.footnote)
+      Spacer()
     }
+    .padding(10.0)
+    .background(
+      LinearGradient(
+        gradient: Gradient(
+          colors: [Color.white, Color(red: 0.0, green: 0.5, blue: 1.0)]
+        ),
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing)
+    )
+    .background(Color.white)
+    .saturation(award.awarded ? 1.0 : 0.0)
+    .opacity(award.awarded ? 1.0 : 0.3)
+    .clipShape(RoundedRectangle(cornerRadius: 25.0))
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct AwardCardView_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+    let award = AwardInformation(
+      imageName: "first-visit-award",
+      title: "First Visit",
+      description: "Awarded the first time you open the app while at the airport.",
+      awarded: true
+    )
+    AwardCardView(award: award)
+      .frame(width: 150, height: 220)
+      .padding()
+      .background(Color.black)
   }
 }

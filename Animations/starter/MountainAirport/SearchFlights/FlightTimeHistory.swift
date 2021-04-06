@@ -32,57 +32,37 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
+struct FlightTimeHistory: View {
   var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
+
 
   var body: some View {
     ZStack {
       Image("background-view")
         .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
-        }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
+        .aspectRatio(contentMode: .fill)
+      VStack {
+        Text("On Time History for \(flight.statusBoardName)")
+          .font(.title2)
+          .padding(.top, 30)
+        ScrollView {
+          DelayBarChart(
+            flight: FlightData.generateTestFlight(date: Date())
           )
-        Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
-    }
+        }
+        HistoryPieChart(flightHistory: flight.history)
+          .font(.footnote)
+          .frame(width: 250, height: 250)
+          .padding(5)
+      }
+    }.foregroundColor(.white)
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct FlightTimeHistory_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+    FlightTimeHistory(
+      flight: FlightData.generateTestFlight(date: Date())
+    )
   }
 }

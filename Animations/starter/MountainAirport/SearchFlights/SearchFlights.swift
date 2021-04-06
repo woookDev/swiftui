@@ -32,57 +32,84 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
-  var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
+struct SearchFlights: View {
+  var flightData: [FlightInformation]
+  @State private var city = ""
+  @State private var date = Date()
+  @State private var directionFilter: FlightDirection = .none
+
+  var matchingFlights: [FlightInformation] {
+    var matchingFlights = flightData
+
+    if directionFilter != .none {
+      matchingFlights = matchingFlights.filter {
+        $0.direction == directionFilter
+      }
+    }
+    if !city.isEmpty {
+      matchingFlights = matchingFlights.filter { $0.otherAirport.lowercased().contains(city.lowercased()) }
+    }
+
+    return matchingFlights
+  }
+
+  var flightDates: [Date] {
+    let allDates = matchingFlights.map { $0.localTime.dateOnly }
+    let uniqueDates = Array(Set(allDates))
+    return uniqueDates.sorted()
+  }
+
+  func flightsForDay(date: Date) -> [FlightInformation] {
+    matchingFlights.filter {
+      Calendar.current.isDate($0.localTime, inSameDayAs: date)
+    }
+  }
 
   var body: some View {
     ZStack {
       Image("background-view")
         .resizable()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-      VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
+      VStack {
+        Picker(
+          selection: $directionFilter,
+          label: Text("Flight Direction")) {
+          Text("All").tag(FlightDirection.none)
+          Text("Arrivals").tag(FlightDirection.arrival)
+          Text("Departures").tag(FlightDirection.departure)
         }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
+        .background(Color.white)
+        .pickerStyle(SegmentedPickerStyle())
+        TextField(" Search cities", text: $city)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+        List {
+          ForEach(flightDates, id: \.hashValue) { date in
+            Section(
+              header: Text(longDateFormatter.string(from: date)),
+              footer:
+                HStack {
+                  Spacer()
+                  Text("Matching flights \(flightsForDay(date: date).count)")
+                }
+            ) {
+              ForEach(flightsForDay(date: date)) { flight in
+                SearchResultRow(flight: flight)
+              }
+            }
           }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
-          )
+        }.listStyle(InsetGroupedListStyle())
         Spacer()
-      }.foregroundColor(.white)
+      }.navigationTitle("Search Flights")
       .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
     }
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct SearchFlights_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+    NavigationView {
+      SearchFlights(flightData: FlightData.generateTestFlights(date: Date())
+      )
+    }
   }
 }

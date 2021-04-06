@@ -32,10 +32,8 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
+struct FlightDetails: View {
   var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
   @EnvironmentObject var lastFlightInfo: AppEnvironment
 
   var body: some View {
@@ -44,26 +42,7 @@ struct FlightSearchDetails: View {
         .resizable()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
       VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
-        }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
+        FlightDetailHeader(flight: flight)
         FlightInfoPanel(flight: flight)
           .padding()
           .background(
@@ -73,16 +52,19 @@ struct FlightSearchDetails: View {
         Spacer()
       }.foregroundColor(.white)
       .padding()
+      .navigationTitle("\(flight.airline) Flight \(flight.number)")
     }.onAppear {
       lastFlightInfo.lastFlightId = flight.id
     }
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct FlightDetails_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+    NavigationView {
+      FlightDetails(
+        flight: FlightData.generateTestFlight(date: Date())
+      ).environmentObject(AppEnvironment())
+    }
   }
 }

@@ -32,57 +32,63 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
+struct FlightInfoPanel: View {
   var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
+  @State private var showTerminal = false
+
+  var timeFormatter: DateFormatter {
+    let tdf = DateFormatter()
+    tdf.timeStyle = .short
+    tdf.dateStyle = .none
+    return tdf
+  }
 
   var body: some View {
-    ZStack {
-      Image("background-view")
+    HStack(alignment: .top) {
+      Image(systemName: "info.circle")
         .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(width: 35, height: 35, alignment: .leading)
       VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
+        Text("Flight Details")
+          .font(.title2)
+        if flight.direction == .arrival {
+          Text("Arriving at Gate \(flight.gate)")
+          Text("Flying from \(flight.otherAirport)")
+        } else {
+          Text("Departing from Gate \(flight.gate)")
+          Text("Flying to \(flight.otherAirport)")
         }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
+        Text(flight.flightStatus) + Text(" (\(timeFormatter.string(from: flight.localTime)))")
+        Button(action: {
+          showTerminal.toggle()
+        }, label: {
+          HStack(alignment: .center) {
+            Text(
+              showTerminal ?
+                "Hide Terminal Map" :
+                "Show Terminal Map"
+            )
+            Spacer()
+            Image(systemName: "airplane.circle")
+              .resizable()
+              .frame(width: 30, height: 30)
+              .padding(10)
+              .rotationEffect(.degrees(showTerminal ? 90 : -90))
           }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
+        })
+        if showTerminal {
+          FlightTerminalMap(flight: flight)
         }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
-          )
         Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
+      }
     }
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct FlightInfoPanel_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+    FlightInfoPanel(
+      flight: FlightData.generateTestFlight(date: Date())
+    )
   }
 }

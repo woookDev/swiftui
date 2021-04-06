@@ -32,57 +32,38 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
+struct FlightSearchSummary: View {
   var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
+
+  var timeFormatter: DateFormatter {
+    let tdf = DateFormatter()
+    tdf.timeStyle = .short
+    tdf.dateStyle = .medium
+    return tdf
+  }
 
   var body: some View {
-    ZStack {
-      Image("background-view")
-        .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    HStack {
+      FlightStatusIcon(flight: flight)
+        .padding(5)
+        .clipShape(RoundedRectangle(cornerRadius: 7.0))
       VStack(alignment: .leading) {
+        Text(flight.flightName)
+          .font(.title3) +
+          Text(" \(flight.dirString) \(flight.otherAirport)")
         HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
+          Text(flight.localTime, formatter: timeFormatter)
+            .foregroundColor(.gray)
         }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
-          )
-        Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
+      }
     }
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct FlightSearchSummary_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+    FlightSearchSummary(
+      flight: FlightData.generateTestFlight(date: Date())
+    )
   }
 }

@@ -34,8 +34,10 @@ import SwiftUI
 
 struct FlightSearchDetails: View {
   var flight: FlightInformation
-  @Binding var showModel: Bool
+  @Binding var showModal: Bool
   @State private var rebookAlert = false
+  @State private var checkInFlight: CheckInInfo?
+  @State private var showFlightHistory = false
   @EnvironmentObject var lastFlightInfo: AppEnvironment
 
   var body: some View {
@@ -48,21 +50,56 @@ struct FlightSearchDetails: View {
           FlightDetailHeader(flight: flight)
           Spacer()
           Button("Close") {
-            self.showModel = false
+            self.showModal = false
           }
         }
-        // 1
         if flight.status == .canceled {
-          // 2
           Button("Rebook Flight") {
             rebookAlert = true
           }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
+          .alert(isPresented: $rebookAlert) {
+            Alert(
+              title: Text("Contact Your Airline"),
+              message: Text(
+                "We cannot rebook this flight. Please contact the airline to reschedule this flight."
+              )
+            )
+          }
+        }
+        if flight.isCheckInAvailable {
+          Button("Check In for Flight") {
+            self.checkInFlight =
+              CheckInInfo(
+                airline: self.flight.airline,
+                flight: self.flight.number
+              )
+          }
+          .actionSheet(item: $checkInFlight) { flight in
+            ActionSheet(
+              title: Text("Check In"),
+              message: Text("Check in for \(flight.airline)" +
+                "Flight \(flight.flight)"),
+              buttons: [
+                .cancel(Text("Not Now")),
+                .destructive(Text("Reschedule"), action: {
+                  print("Reschedule flight.")
+                }),
+                .default(Text("Check In"), action: {
+                  print(
+                    "Check-in for \(flight.airline) \(flight.flight)."
+                  )
+                })
+              ]
+            )
+          }
+        }
+        Button("On-Time History") {
+          showFlightHistory.toggle()
+        }
+        .popover(
+          isPresented: $showFlightHistory,
+          arrowEdge: .top) {
+          FlightTimeHistory(flight: self.flight)
         }
         FlightInfoPanel(flight: flight)
           .padding()
@@ -82,7 +119,8 @@ struct FlightSearchDetails: View {
 struct FlightSearchDetails_Previews: PreviewProvider {
   static var previews: some View {
     FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
+      flight: FlightData.generateTestFlight(date: Date()),
+      showModal: .constant(true)
     ).environmentObject(AppEnvironment())
   }
 }

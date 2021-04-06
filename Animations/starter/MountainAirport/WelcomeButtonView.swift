@@ -32,57 +32,48 @@
 
 import SwiftUI
 
-struct FlightSearchDetails: View {
-  var flight: FlightInformation
-  @Binding var showModel: Bool
-  @State private var rebookAlert = false
-  @EnvironmentObject var lastFlightInfo: AppEnvironment
+struct WelcomeButtonView: View {
+  var title: String
+  var subTitle: String
+  var imageName: String
+  var imageAngle: Double = 0.0
 
   var body: some View {
-    ZStack {
-      Image("background-view")
+    VStack(alignment: .leading) {
+      Image(systemName: imageName)
         .resizable()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      VStack(alignment: .leading) {
-        HStack {
-          FlightDetailHeader(flight: flight)
-          Spacer()
-          Button("Close") {
-            self.showModel = false
-          }
-        }
-        // 1
-        if flight.status == .canceled {
-          // 2
-          Button("Rebook Flight") {
-            rebookAlert = true
-          }
-          
-          // 3
-          .alert(isPresented: $rebookAlert, content: {
-            // 4
-            Alert(title: Text("Contact Your Airline"), message: Text("We cannot rebook this flight. Please contact the airline to reschedule this flight"))
-          })
-        }
-        FlightInfoPanel(flight: flight)
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 20.0)
-              .opacity(0.3)
-          )
-        Spacer()
-      }.foregroundColor(.white)
-      .padding()
-    }.onAppear {
-      lastFlightInfo.lastFlightId = flight.id
-    }
+        .frame(width: 30, height: 30)
+        .padding(10)
+        .background(
+          Circle()
+            .foregroundColor(.white)
+            .opacity(0.3)
+        )
+        .rotationEffect(.degrees(imageAngle))
+      Spacer()
+      Text(title)
+        .font(.title2)
+      Text(subTitle)
+        .font(.subheadline)
+    }.foregroundColor(.white)
+    .padding()
+    .frame(width: 155, height: 220, alignment: .leading)
+    .background(
+      Image("link-pattern")
+        .resizable()
+        .clipped()
+    )
+    .shadow(radius: 10)
   }
 }
 
-struct FlightSearchDetails_Previews: PreviewProvider {
+struct WelcomeButtonView_Previews: PreviewProvider {
   static var previews: some View {
-    FlightSearchDetails(
-      flight: FlightData.generateTestFlight(date: Date()), showModel: .constant(true)
-    ).environmentObject(AppEnvironment())
+    WelcomeButtonView(
+      title: "Flight Status",
+      subTitle: "Departure and Arrival Information",
+      imageName: "airplane",
+      imageAngle: -45.0
+    )
   }
 }
