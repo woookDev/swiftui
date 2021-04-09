@@ -58,6 +58,7 @@ struct FlightSearchDetails: View {
             rebookAlert = true
           }
           
+          
           // 3
           .alert(isPresented: $rebookAlert, content: {
             // 4
