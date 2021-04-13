@@ -68,7 +68,7 @@ struct FlightInfoPanel: View {
               .frame(width: 30, height: 30)
               .padding(.trailing, 10)
               .rotationEffect(.degrees(showTerminal ? 90 : 270))
-              .animation(.linear(duration: 1.0))
+              .animation(Animation.default.speed(0.35))
             Spacer()
             Text(
               showTerminal ?
@@ -81,7 +81,7 @@ struct FlightInfoPanel: View {
               .frame(width: 30, height: 30)
               .padding(10)
               .rotationEffect(.degrees(showTerminal ? 90 : 270))
-              .animation(Animation.default.speed(0.33))
+              .animation(.easeOut(duration: 1.0))
           }
         })
         if showTerminal {
